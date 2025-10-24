@@ -126,31 +126,14 @@ nav{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;al
 .form-group textarea{resize:vertical;min-height:150px;}
 .submit-button{width:100%;padding:1.4rem;background:white;color:#667eea;border:none;border-radius:12px;font-size:1.2rem;font-weight:700;cursor:pointer;transition:all 0.3s;box-shadow:0 10px 30px rgba(0,0,0,0.2);}
 .submit-button:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(0,0,0,0.3);}
-/* כפתור WhatsApp */
+ /* כפתור WhatsApp */
 .whatsapp-button{position:fixed;bottom:35px;left:35px;width:70px;height:70px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(37,211,102,0.4);z-index:1000;cursor:pointer;transition:all 0.3s;animation:pulse-whatsapp 2s infinite;}
 @keyframes pulse-whatsapp{0%,100%{box-shadow:0 8px 30px rgba(37,211,102,0.4);}50%{box-shadow:0 8px 40px rgba(37,211,102,0.6),0 0 0 15px rgba(37,211,102,0.1);}}
 .whatsapp-button:hover{transform:scale(1.15);box-shadow:0 12px 40px rgba(37,211,102,0.6);}
 .whatsapp-icon{width:40px;height:40px;fill:white;}
 /* התאמות רספונסיביות */
-@media(max-width:1024px){
-.hero-content{grid-template-columns:1fr;text-align:center;}
-.hero-image{display:none;}
-.hero-buttons{justify-content:center;}
-.form-row{grid-template-columns:1fr;}
-}
-@media(max-width:768px){
-nav{padding:0 1.5rem;}
-.nav-links{display:none;}/* אפשר להוסיף תפריט המבורגר אם תרצה */
-.hero{padding:150px 1.5rem 100px;}
-.hero-text h1{font-size:2.5rem;}
-.hero-text p{font-size:1.1rem;}
-.section-title{font-size:2.2rem;}
-.services-grid,.gallery-grid,.testimonials-container{grid-template-columns:1fr;}
-.stats,.services,.gallery,.testimonials,.faq,.contact{padding:4rem 1.5rem;}
-.contact-form{padding:2rem 1.5rem;}
-.whatsapp-button{width:60px;height:60px;bottom:25px;left:25px;}
-.whatsapp-icon{width:32px;height:32px;}
-}
+@media(max-width:1024px){.hero-content{grid-template-columns:1fr;text-align:center;}.hero-image{display:none;}.hero-buttons{justify-content:center;}.form-row{grid-template-columns:1fr;}}
+@media(max-width:768px){nav{padding:0 1.5rem;}.nav-links{display:none;}.hero{padding:150px 1.5rem 100px;}.hero-text h1{font-size:2.5rem;}.hero-text p{font-size:1.1rem;}.section-title{font-size:2.2rem;}.services-grid,.gallery-grid,.testimonials-container{grid-template-columns:1fr;}.stats,.services,.gallery,.testimonials,.faq,.contact{padding:4rem 1.5rem;}.contact-form{padding:2rem 1.5rem;}.whatsapp-button{width:60px;height:60px;bottom:25px;left:25px;}.whatsapp-icon{width:32px;height:32px;}}
 </style>
 </head>
 <body>
@@ -353,13 +336,14 @@ nav{padding:0 1.5rem;}
         <p>החזרת הצבע והרעננות המקורית</p>
       </div>
     </div>
-    <!-- כרטיס השוואה 3 -->
+    <!-- כרטיס השוואה 3 (מזרון זוגי) עם תמונות מעודכנות -->
     <div class="comparison-card">
       <div class="comparison-container">
         <div class="comparison-label label-before">לפני</div>
         <div class="comparison-label label-after">אחרי</div>
+        <!-- כאן עדכנו את כתובת התמונות -->
         <div class="comparison-image before-img" style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=60');"></div>
-        <div class="comparison-image after-img" style="background-image:url('https://images.unsplash.com/photo-1534694818-58f9ffb5306d?auto=format&fit=crop&w=800&q=60');"></div>
+        <div class="comparison-image after-img" style="background-image:url('https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=800&q=60');"></div>
         <div class="comparison-divider"></div>
         <div class="comparison-handle">⇄</div>
       </div>
@@ -395,7 +379,7 @@ nav{padding:0 1.5rem;}
       <p class="testimonial-location">חיפה</p>
     </div>
     <div class="testimonial-card">
-      <div class="stars">★★★★★</div>
+      <div the stars">★★★★★</div>
       <p class="testimonial-text">הייתי בטוח שנצטרך להחליף את השטיח, אבל הם הצליחו להחזיר אותו לחיים! תודה רבה על העבודה המקצועית.</p>
       <p class="testimonial-author">יוסי מזרחי</p>
       <p class="testimonial-location">באר שבע</p>
@@ -553,6 +537,10 @@ const statsObserver = new IntersectionObserver(entries => {
   });
 },{threshold:0.5});
 if(statsSection){ statsObserver.observe(statsSection); }
+// הפעלת האנימציה גם בעת טעינת הדף
+document.addEventListener('DOMContentLoaded', () => {
+  animateStats();
+});
 // פתיחת וסגירת FAQ
 function toggleFaq(element) {
   const answer = element.nextElementSibling;
