@@ -17,9 +17,12 @@
     text-align: center;
     color: #4a5bd7;
   }
+  h2 {
+    text-align: center;
+  }
   .hidden { display: none; }
   #loginDiv, #crmDiv {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
   }
   #loginDiv input {
@@ -40,10 +43,27 @@
     cursor: pointer;
     font-size: 1rem;
   }
+
+  /* כפתורי פעולה */
+  .crm-actions {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .crm-actions button {
+    margin: 0 0.5rem;
+    padding: 0.6rem 1.4rem;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    background: #4a5bd7;
+  }
+
   table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 2rem;
+    margin-top: 1rem;
     background: #fff;
     border-radius: 12px;
     overflow: hidden;
@@ -61,7 +81,8 @@
   tr:last-child td {
     border-bottom: none;
   }
-  /* הגדלת רוחב הפקדים בעריכה */
+
+  /* הגדלת רוחב לפקדים בטבלה */
   #leadsTable select,
   #leadsTable input[type="text"] {
     width: 100%;
@@ -69,6 +90,36 @@
     border: 1px solid #ccc;
     border-radius: 6px;
     box-sizing: border-box;
+  }
+
+  /* רוחב מינימלי לעמודות: סטטוס, מחיר, הערות */
+  #leadsTable th:nth-child(5),
+  #leadsTable td:nth-child(5) {
+    min-width: 120px;
+  }
+  #leadsTable th:nth-child(6),
+  #leadsTable td:nth-child(6) {
+    min-width: 80px;
+  }
+  #leadsTable th:nth-child(8),
+  #leadsTable td:nth-child(8) {
+    min-width: 150px;
+  }
+
+  /* הדפסה: הצג רק את הטבלה בעת הדפסה */
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    #crmDiv, #crmDiv * {
+      visibility: visible;
+    }
+    #crmDiv {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
   }
 </style>
 </head>
@@ -86,6 +137,12 @@
 <!-- אזור CRM (מופיע רק לאחר התחברות) -->
 <div id="crmDiv" class="hidden">
   <h2>לידים קיימים</h2>
+
+  <div class="crm-actions">
+    <button id="exportCsvBtn">ייצוא לאקסל</button>
+    <button id="printBtn">הדפס</button>
+  </div>
+
   <table id="leadsTable">
     <thead>
       <tr>
@@ -96,7 +153,7 @@
         <th>סטטוס</th>
         <th>מחיר</th>
         <th>הודעה</th>
-        <th>הערות</th> <!-- טור הערות חדש -->
+        <th>הערות</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -119,6 +176,10 @@
   const crmDiv   = document.getElementById('crmDiv');
   const loginBtn = document.getElementById('loginBtn');
   const leadsTableBody = document.querySelector('#leadsTable tbody');
+
+  // כפתורי ייצוא והדפסה
+  const exportCsvBtn = document.getElementById('exportCsvBtn');
+  const printBtn     = document.getElementById('printBtn');
 
   // התחברות בלחיצה
   loginBtn.addEventListener('click', async () => {
@@ -185,6 +246,42 @@
       });
     });
   }
+
+  // פונקציה לייצוא כל הלידים ל-CSV (אקסל)
+  async function exportCsv() {
+    const querySnapshot = await getDocs(collection(db, 'leads'));
+    const rows = [];
+    // כותרות בעברית
+    rows.push(['שם','טלפון','אימייל','שירות','סטטוס','מחיר','הודעה','הערות']);
+    querySnapshot.forEach(docSnap => {
+      const d = docSnap.data();
+      rows.push([
+        d.name || '',
+        d.phone || '',
+        d.email || '',
+        d.service || '',
+        d.status || '',
+        d.price || '',
+        d.message || '',
+        d.notes || ''
+      ]);
+    });
+    // יצירת מחרוזת CSV, התייחסות לרווחים וסימני מירכאות
+    const csvContent = rows.map(row =>
+      row.map(item => `"${String(item).replace(/"/g, '""')}"`).join(',')
+    ).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'leads.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // חיבור הכפתורים לאירועים
+  exportCsvBtn.addEventListener('click', exportCsv);
+  printBtn.addEventListener('click', () => window.print());
 </script>
 
 </body>
