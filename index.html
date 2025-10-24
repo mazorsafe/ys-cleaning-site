@@ -568,5 +568,37 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
   });
 });
 </script>
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+  import { firebaseConfig } from "./firebase-config.js";
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const contactForm = document.querySelector('.contact-form');
+  contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(contactForm);
+    const leadData = {
+      name: formData.get('name'),
+      phone: formData.get('phone'),
+      email: formData.get('email') || '',
+      service: formData.get('service'),
+      message: formData.get('message') || '',
+      status: 'חדש',
+      price: '',
+      createdAt: new Date()
+    };
+    try {
+      await addDoc(collection(db, 'leads'), leadData);
+      alert('הפרטים נשלחו בהצלחה!');
+      contactForm.reset();
+    } catch (err) {
+      console.error('Error adding document: ', err);
+      alert('אירעה תקלה בשליחת הנתונים');
+    }
+  });
+</script>
 </body>
 </html>
