@@ -44,15 +44,15 @@
     width: 100%; padding: 0.4rem; border: 1px solid #ccc;
     border-radius: 6px; box-sizing: border-box;
   }
-  /* רוחב מינימלי לעמודות */
+  /* רוחב מינימלי לעמודות ספציפיות */
   #leadsTable th:nth-child(5),
-  #leadsTable td:nth-child(5) { min-width: 120px; }
+  #leadsTable td:nth-child(5) { min-width: 120px; }  /* סטטוס */
   #leadsTable th:nth-child(6),
-  #leadsTable td:nth-child(6) { min-width: 80px; }
+  #leadsTable td:nth-child(6) { min-width: 80px; }   /* מחיר */
   #leadsTable th:nth-child(8),
-  #leadsTable td:nth-child(8) { min-width: 150px; }
+  #leadsTable td:nth-child(8) { min-width: 150px; }  /* הערות */
   #leadsTable th:nth-child(9),
-  #leadsTable td:nth-child(9) { min-width: 120px; } /* פעולות */
+  #leadsTable td:nth-child(9) { min-width: 170px; }  /* פעולות */
   @media print {
     body * { visibility: hidden; }
     #crmDiv, #crmDiv * { visibility: visible; }
@@ -141,13 +141,22 @@
     }
   });
 
-  // load leads or archive
+  // load leads (regular or archive)
   async function loadLeads() {
     leadsTableBody.innerHTML = '';
     const collectionName = viewingArchive ? 'leads_archive' : 'leads';
-    const querySnapshot = await getDocs(collection(db, collectionName));
+    const querySnapshot  = await getDocs(collection(db, collectionName));
     querySnapshot.forEach(docSnap => {
       const data = docSnap.data();
+      // צור קישורי WhatsApp ו-Mail
+      const phoneRaw = data.phone || '';
+      let phoneIntl  = phoneRaw.replace(/\D/g, '');
+      if (phoneIntl && phoneIntl.startsWith('0')) {
+        phoneIntl = '972' + phoneIntl.substring(1);
+      }
+      const whatsappLink = phoneIntl ? `https://wa.me/${phoneIntl}` : '';
+      const emailLink    = data.email ? `mailto:${data.email}` : '';
+      // בנה שורה
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${data.name || ''}</td>
@@ -169,14 +178,16 @@
           ${viewingArchive
             ? `<button class="restore-btn" data-id="${docSnap.id}">השב</button>`
             : `<button class="edit-btn" data-id="${docSnap.id}">ערוך</button>
-               <button class="delete-btn" data-id="${docSnap.id}">מחק</button>`
+               <button class="delete-btn" data-id="${docSnap.id}">מחק</button>
+               ${whatsappLink ? `<a href="${whatsappLink}" target="_blank">וואטסאפ</a>` : ''}
+               ${emailLink    ? `<a href="${emailLink}" target="_blank">מייל</a>`     : ''}`
           }
         </td>
       `;
       leadsTableBody.appendChild(tr);
     });
 
-    // enable editing fields only in active view
+    // עריכת שדות פעילים
     if (!viewingArchive) {
       leadsTableBody.querySelectorAll('select, input[type="text"]').forEach(el => {
         el.addEventListener('change', async (e) => {
@@ -191,14 +202,14 @@
           }
         });
       });
-      // edit buttons
+      // עריכה
       leadsTableBody.querySelectorAll('.edit-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
-          const id = e.target.getAttribute('data-id');
-          const docRef  = doc(db, 'leads', id);
-          const docSnap = await getDoc(docRef);
-          const data    = docSnap.data();
-          // prompts for each field
+          const id     = e.target.getAttribute('data-id');
+          const docRef = doc(db, 'leads', id);
+          const snap   = await getDoc(docRef);
+          const data   = snap.data();
+          // prompts
           const name    = prompt('שם מלא:', data.name || '');
           const phone   = prompt('טלפון:', data.phone || '');
           const email   = prompt('אימייל (לא חובה):', data.email || '');
@@ -207,26 +218,18 @@
           const status  = prompt('סטטוס (חדש/בטיפול/בוצע/סגור):', data.status || 'חדש');
           const price   = prompt('מחיר:', data.price || '');
           const notes   = prompt('הערות מנהל:', data.notes || '');
-          // עדכון במסד
           await updateDoc(docRef, {
-            name,
-            phone,
-            email,
-            service,
-            message,
-            status,
-            price,
-            notes
+            name, phone, email, service,
+            message, status, price, notes
           });
           await loadLeads();
         });
       });
-      // delete buttons
+      // מחיקה
       leadsTableBody.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
           const id = e.target.getAttribute('data-id');
           try {
-            // שלוף את המסמך
             const docRef  = doc(db, 'leads', id);
             const docSnap = await getDoc(docRef);
             const data    = docSnap.data();
@@ -239,7 +242,7 @@
         });
       });
     } else {
-      // restore buttons in archive view
+      // השבת ליד מהארכיון
       leadsTableBody.querySelectorAll('.restore-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
           const id = e.target.getAttribute('data-id');
@@ -258,11 +261,19 @@
     }
   }
 
+  // toggle archive
+  function toggleArchive() {
+    viewingArchive = !viewingArchive;
+    tableTitle.textContent = viewingArchive ? 'לידים בארכיון' : 'לידים קיימים';
+    toggleArchiveBtn.textContent = viewingArchive ? 'חזור לרשימה' : 'צפה בארכיון';
+    loadLeads();
+  }
+
   // add lead manually
   async function addLeadManually() {
-    const name = prompt('שם מלא:');
-    const phone = prompt('טלפון:');
-    const email = prompt('אימייל (לא חובה):');
+    const name    = prompt('שם מלא:');
+    const phone   = prompt('טלפון:');
+    const email   = prompt('אימייל (לא חובה):');
     const service = prompt('שירות:');
     const message = prompt('הודעה/הערות:');
     if (!name || !phone || !service) {
@@ -285,33 +296,25 @@
     await loadLeads();
   }
 
-  // toggle archive view
-  function toggleArchive() {
-    viewingArchive = !viewingArchive;
-    tableTitle.textContent = viewingArchive ? 'לידים בארכיון' : 'לידים קיימים';
-    toggleArchiveBtn.textContent = viewingArchive ? 'חזור לרשימה' : 'צפה בארכיון';
-    loadLeads();
-  }
-
   // export CSV
   async function exportCsv() {
-    const collectionName = viewingArchive ? 'leads_archive' : 'leads';
-    const querySnapshot = await getDocs(collection(db, collectionName));
+    const col = viewingArchive ? 'leads_archive' : 'leads';
+    const snap = await getDocs(collection(db, col));
     const rows = [];
     rows.push(['שם','טלפון','אימייל','שירות','סטטוס','מחיר','הודעה','הערות','מקור']);
-    querySnapshot.forEach(docSnap => {
+    snap.forEach(docSnap => {
       const d = docSnap.data();
       rows.push([
         d.name || '', d.phone || '', d.email || '', d.service || '',
-        d.status || '', d.price || '', d.message || '',
-        d.notes || '', d.source || ''
+        d.status || '', d.price || '', d.message || '', d.notes || '', d.source || ''
       ]);
     });
     const csv = rows.map(r => r.map(i => `"${String(i).replace(/"/g,'""')}"`).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
-    a.href = url; a.download = (viewingArchive ? 'leads_archive' : 'leads') + '.csv'; a.click();
+    a.href = url; a.download = (viewingArchive ? 'leads_archive' : 'leads') + '.csv';
+    a.click();
     URL.revokeObjectURL(url);
   }
 
