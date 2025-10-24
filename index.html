@@ -1,424 +1,243 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>י.ש ניקוי ספות, שטיחים ומזרנים</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            direction: rtl;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        /* Top bar with phone and WhatsApp */
-        .top-bar {
-            background-color: #00407a;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-        }
-        .top-bar a {
-            color: white;
-            text-decoration: none;
-            margin-left: 10px;
-        }
-        /* Navigation */
-        .nav {
-            background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 10px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .nav .logo {
-            font-size: 20px;
-            font-weight: bold;
-            color: #00407a;
-        }
-        .nav ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            gap: 20px;
-        }
-        .nav ul li a {
-            text-decoration: none;
-            color: #00407a;
-            font-weight: 500;
-        }
-        /* Hero section */
-        header.hero {
-            background-image: url('https://images.unsplash.com/photo-1585555442234-17e647c491b1?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-align: center;
-            padding: 80px 20px;
-        }
-        header.hero h1 {
-            font-size: 40px;
-            margin-bottom: 10px;
-        }
-        header.hero p {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        .hero-buttons {
-            margin-top: 20px;
-        }
-        .hero-buttons a {
-            text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 4px;
-            margin-left: 10px;
-            display: inline-block;
-            font-weight: bold;
-        }
-        .btn-primary {
-            background-color: #00407a;
-            color: white;
-        }
-        .btn-secondary {
-            background-color: #ffc107;
-            color: #00407a;
-        }
-        /* Features section */
-        .features {
-            padding: 60px 20px;
-            background-color: white;
-        }
-        .features h2 {
-            text-align: center;
-            margin-bottom: 40px;
-            color: #00407a;
-        }
-        .feature-cards {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-        .feature-card {
-            background-color: #f8f9fa;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-            max-width: 300px;
-            text-align: center;
-        }
-        .feature-card h3 {
-            margin-top: 10px;
-            color: #00407a;
-        }
-        /* Before-and-after section */
-        .before-after {
-            padding: 60px 20px;
-            background-color: #f8f9fa;
-        }
-        .before-after h2 {
-            text-align: center;
-            margin-bottom: 40px;
-            color: #00407a;
-        }
-        .before-after-images {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-        .before-after-images img {
-            width: 300px;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        /* Pricing section */
-        .pricing {
-            padding: 60px 20px;
-            background-color: white;
-        }
-        .pricing h2 {
-            text-align: center;
-            margin-bottom: 40px;
-            color: #00407a;
-        }
-        .pricing-table {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            border-collapse: collapse;
-            text-align: center;
-        }
-        .pricing-table th, .pricing-table td {
-            border: 1px solid #e0e0e0;
-            padding: 12px;
-        }
-        .pricing-table th {
-            background-color: #00407a;
-            color: white;
-        }
-        /* Testimonials section */
-        .testimonials {
-            padding: 60px 20px;
-            background-color: #f8f9fa;
-        }
-        .testimonials h2 {
-            text-align: center;
-            margin-bottom: 40px;
-            color: #00407a;
-        }
-        .testimonial-cards {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-        .testimonial-card {
-            background-color: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-            max-width: 300px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .testimonial-card p {
-            font-style: italic;
-            margin-bottom: 10px;
-        }
-        .testimonial-card .customer {
-            font-weight: bold;
-            color: #00407a;
-        }
-        /* Contact section */
-        .contact {
-            padding: 60px 20px;
-            background-color: white;
-        }
-        .contact h2 {
-            text-align: center;
-            margin-bottom: 40px;
-            color: #00407a;
-        }
-        .contact form {
-            max-width: 600px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .contact input, .contact textarea {
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        .contact button {
-            padding: 12px;
-            border: none;
-            background-color: #00407a;
-            color: white;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        /* Footer */
-        footer {
-            background-color: #00407a;
-            color: white;
-            text-align: center;
-            padding: 20px 10px;
-        }
-        /* Floating WhatsApp button */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 999;
-        }
-        .whatsapp-float a {
-            display: flex;
-            align-items: center;
-            background-color: #25D366;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
-        .whatsapp-float a img {
-            width: 24px;
-            height: 24px;
-            margin-right: 8px;
-        }
-        /* Responsive */
-        @media (max-width: 768px) {
-            .feature-cards, .before-after-images, .testimonial-cards {
-                flex-direction: column;
-                align-items: center;
-            }
-            .pricing-table {
-                font-size: 14px;
-            }
-            .nav ul {
-                display: none; /* hide nav links on small screens for simplicity */
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>י.ש ניקוי ספות, שטיחים ומזרנים</title>
+<style>
+/* בסיס עיצוב */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    direction: rtl;
+    background-color: #f8f8f8;
+    color: #333;
+}
+h1, h2, h3 {
+    margin-top: 0;
+}
+header {
+    background-image: url('https://images.unsplash.com/photo-1585555442234-17e647c491b1?auto=format&fit=crop&w=1600&q=80');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 120px 20px;
+    text-align: center;
+    position: relative;
+}
+header::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 0;
+}
+header h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+    z-index: 1;
+    position: relative;
+    font-weight: bold;
+}
+header p {
+    font-size: 18px;
+    margin-bottom: 20px;
+    z-index: 1;
+    position: relative;
+}
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    z-index: 1;
+    position: relative;
+}
+.buttons a {
+    background-color: #00407a;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+.buttons a:hover {
+    background-color: #002e57;
+}
+section {
+    padding: 40px 20px;
+}
+.features {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.feature {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    flex: 1;
+    min-width: 250px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+.feature h3 {
+    color: #00407a;
+    margin-bottom: 10px;
+}
+.pricing {
+    background-color: #eaf3fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+.pricing table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.pricing th, .pricing td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+.pricing th {
+    background-color: #00407a;
+    color: white;
+}
+.before-after {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.before-after img {
+    width: 45%;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.testimonials {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+.testimonial {
+    margin-bottom: 15px;
+}
+.contact {
+    background-color: #eaf3fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+.contact form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.contact input, .contact textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+.contact button {
+    background-color: #00407a;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.contact button:hover {
+    background-color: #002e57;
+}
+.whatsapp {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #25D366;
+    color: white;
+    padding: 15px;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 24px;
+    z-index: 1000;
+}
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #00407a;
+    color: white;
+    margin-top: 20px;
+}
+</style>
 </head>
 <body>
-
-    <!-- Top bar -->
-    <div class="top-bar">
-        <div>ניקוי ספות, שטיחים ומזרנים מקצועי</div>
-        <div>
-            <a href="tel:0526333360">052‑6333360</a>
-            | 
-            <a href="https://wa.me/972526333360" target="_blank">WhatsApp</a>
-        </div>
+<header>
+    <h1>י.ש ניקוי ספות, שטיחים ומזרנים</h1>
+    <p>ניקוי עמוק ומקצועי עד בית הלקוח עם ציוד מתקדם וחומרים ידידותיים לסביבה.</p>
+    <div class="buttons">
+        <a href="tel:0526333360">התקשרו עכשיו</a>
+        <a href="#contact">השאירו פרטים</a>
     </div>
-
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="logo">י.ש ניקוי ספות</div>
-        <ul>
-            <li><a href="#services">השירותים שלנו</a></li>
-            <li><a href="#pricing">מחירון</a></li>
-            <li><a href="#gallery">לפני ואחרי</a></li>
-            <li><a href="#testimonials">המלצות</a></li>
-            <li><a href="#contact">צור קשר</a></li>
-        </ul>
-    </nav>
-
-    <!-- Hero Section -->
-    <header class="hero">
-        <h1>י.ש ניקוי ספות, שטיחים ומזרנים</h1>
-        <p>ניקוי עמוק ומקצועי עם ציוד מתקדם וחומרים ידידותיים לסביבה – עד בית הלקוח</p>
-        <div class="hero-buttons">
-            <a href="#contact" class="btn-primary">השאירו פרטים</a>
-            <a href="tel:0526333360" class="btn-secondary">התקשרו עכשיו</a>
-        </div>
-    </header>
-
-    <!-- Features Section -->
-    <section class="features" id="services">
-        <h2>למה לבחור בנו?</h2>
-        <div class="feature-cards">
-            <div class="feature-card">
-                <h3>טכנולוגיה מתקדמת</h3>
-                <p>אנו משתמשים בציוד וחומרים חדשניים להסרת כתמים ולחיטוי עמוק.</p>
-            </div>
-            <div class="feature-card">
-                <h3>צוות מקצועי</h3>
-                <p>הצוות שלנו מיומן ומנוסה בניקוי כל סוגי הריפודים והשטיחים.</p>
-            </div>
-            <div class="feature-card">
-                <h3>מחירים הוגנים</h3>
-                <p>מחירים שקופים ותחרותיים – שילוב מושלם של איכות וערך.</p>
-            </div>
-            <div class="feature-card">
-                <h3>שירות עד הבית</h3>
-                <p>נגיע אליכם עם כל הציוד הנדרש, בזמן שמתאים לכם.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section class="pricing" id="pricing">
-        <h2>מחירון</h2>
-        <table class="pricing-table">
-            <tr>
-                <th>שירות</th>
-                <th>מחיר (₪)</th>
-            </tr>
-            <tr>
-                <td>ספה דו-מושבית</td>
-                <td>230</td>
-            </tr>
-            <tr>
-                <td>ספה תלת-מושבית</td>
-                <td>280</td>
-            </tr>
-            <tr>
-                <td>סט 2+3 מושבים</td>
-                <td>370</td>
-            </tr>
-            <tr>
-                <td>כורסה/טלוויזיה</td>
-                <td>150</td>
-            </tr>
-            <tr>
-                <td>מזרן יחיד</td>
-                <td>250</td>
-            </tr>
-        </table>
-        <p style="text-align:center; margin-top:10px;">*המחירים עשויים להשתנות בהתאם למצב הריפוד וגודל הפריט</p>
-    </section>
-
-    <!-- Before and After Section -->
-    <section class="before-after" id="gallery">
-        <h2>לפני ואחרי</h2>
-        <div class="before-after-images">
-            <img src="https://images.unsplash.com/photo-1598300058376-465f2478fc91?auto=compress&cs=tinysrgb&dpr=2&w=500" alt="ספה לפני">
-            <img src="https://images.unsplash.com/photo-1600573471650-190f3d0c7f6c?auto=compress&cs=tinysrgb&dpr=2&w=500" alt="ספה אחרי">
-            <img src="https://images.unsplash.com/photo-1542068829-1115f7259450?auto=compress&cs=tinysrgb&dpr=2&w=500" alt="ניקוי שטיח">
-            <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=compress&cs=tinysrgb&dpr=2&w=500" alt="ניקוי מזרן">
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section class="testimonials" id="testimonials">
-        <h2>המלצות לקוחות</h2>
-        <div class="testimonial-cards">
-            <div class="testimonial-card">
-                <p>“השירות היה מצוין והספה נראית כמו חדשה! ממליץ בחום.”</p>
-                <div class="customer">– דוד, ראשון לציון</div>
-            </div>
-            <div class="testimonial-card">
-                <p>“הצוות הגיע בזמן, עבדו במקצועיות והמחיר היה הוגן. בטוח שאזמין שוב.”</p>
-                <div class="customer">– שרון, כפר סבא</div>
-            </div>
-            <div class="testimonial-card">
-                <p>“מומלץ מאוד! הניקוי פתר לי בעיה של כתמים ישנים. תודה רבה.”</p>
-                <div class="customer">– יעל, תל אביב</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <h2>צור קשר</h2>
-        <form action="https://formspree.io/f/{your-form-id}" method="POST">
-            <input type="text" name="name" placeholder="שם מלא" required>
-            <input type="tel" name="phone" placeholder="טלפון" required>
-            <textarea name="message" rows="4" placeholder="הודעה"></textarea>
-            <button type="submit">שלחו הודעה</button>
-        </form>
-    </section>
-
-    <!-- WhatsApp Floating Button -->
-    <div class="whatsapp-float">
-        <a href="https://wa.me/972526333360?text=%D7%A9%D7%9C%D7%95%D7%9D%20%D7%A8%D7%A6%D7%94%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%A4%D7%A8%D7%98%D7%99%D7%9D%20%D7%A2%D7%9C%20%D7%A0%D7%99%D7%A7%D7%95%D7%99%20%D7%A1%D7%A4%D7%94" target="_blank">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" alt="WhatsApp">
-            WhatsApp
-        </a>
+</header>
+<section class="features">
+    <div class="feature">
+        <h3>טכנולוגיה מתקדמת</h3>
+        <p>אנו משתמשים בציוד וחומרים המובילים בשוק להשגת ניקוי עמוק ויעיל.</p>
     </div>
-
-    <!-- Footer -->
-    <footer>
-        <p>© 2025 י.ש ניקוי ספות, שטיחים ומזרנים. כל הזכויות שמורות.</p>
-    </footer>
-
+    <div class="feature">
+        <h3>צוות מקצועי</h3>
+        <p>הצוות שלנו מיומן ומנוסה, מבטיח תוצאות מושלמות ושירות אדיב.</p>
+    </div>
+    <div class="feature">
+        <h3>מחירים הוגנים</h3>
+        <p>אנו מציעים מחירים תחרותיים ושקופים ללא הפתעות.</p>
+    </div>
+</section>
+<section class="pricing">
+    <h2>מחירון שירותים</h2>
+    <table>
+        <tr><th>שירות</th><th>מחיר</th></tr>
+        <tr><td>ניקוי כורסת יחיד</td><td>150 ₪</td></tr>
+        <tr><td>ניקוי ספה זוגית</td><td>220 ₪</td></tr>
+        <tr><td>ניקוי ספה תלת מושבית</td><td>280 ₪</td></tr>
+        <tr><td>ניקוי סלון 3+2</td><td>300 ₪</td></tr>
+    </table>
+    <p>המחירים משוערים ויכולים להשתנות בהתאם לגודל ולמצב הרהיט.</p>
+</section>
+<section class="before-after">
+    <img src="https://images.unsplash.com/photo-1600585153986-5cbf3561f8fa?auto=format&fit=crop&w=800&q=80" alt="לפני הניקוי">
+    <img src="https://images.unsplash.com/photo-1581579186989-9b4a21622fc0?auto=format&fit=crop&w=800&q=80" alt="אחרי הניקוי">
+</section>
+<section class="testimonials">
+    <h2>המלצות</h2>
+    <div class="testimonial">
+        <p>״השירות היה מדהים והתוצאות נהדרות! הספה נראית כמו חדשה.״</p>
+        <p>- יעל מ.</p>
+    </div>
+    <div class="testimonial">
+        <p>״הזמנתי ניקוי שטיחים ומזרנים וקיבלתי שירות מקצועי ואדיב. מומלץ בחום!"</p>
+        <p>- דני ק.</p>
+    </div>
+</section>
+<section id="contact" class="contact">
+    <h2>צרו קשר</h2>
+    <form action="https://formspree.io/f/mayvjvln" method="POST">
+        <input type="text" name="name" placeholder="שם" required>
+        <input type="tel" name="phone" placeholder="טלפון" required>
+        <textarea name="message" placeholder="הודעה" rows="4"></textarea>
+        <button type="submit">שלח</button>
+    </form>
+</section>
+<a class="whatsapp" href="https://wa.me/972526333360" target="_blank" title="שלחו הודעה ב-WhatsApp">💬</a>
+<footer>
+    <p>כל הזכויות שמורות © 2025 י.ש ניקוי ספות, שטיחים ומזרנים</p>
+</footer>
 </body>
 </html>
