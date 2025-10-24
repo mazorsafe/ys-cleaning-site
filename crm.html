@@ -19,7 +19,7 @@
   }
   .hidden { display: none; }
   #loginDiv, #crmDiv {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
   }
   #loginDiv input {
@@ -61,11 +61,14 @@
   tr:last-child td {
     border-bottom: none;
   }
-  select, input[type="text"] {
-    width: 90%;
+  /* הגדלת רוחב הפקדים בעריכה */
+  #leadsTable select,
+  #leadsTable input[type="text"] {
+    width: 100%;
     padding: 0.4rem;
     border: 1px solid #ccc;
     border-radius: 6px;
+    box-sizing: border-box;
   }
 </style>
 </head>
@@ -86,8 +89,14 @@
   <table id="leadsTable">
     <thead>
       <tr>
-        <th>שם</th><th>טלפון</th><th>אימייל</th><th>שירות</th>
-        <th>סטטוס</th><th>מחיר</th><th>הודעה</th>
+        <th>שם</th>
+        <th>טלפון</th>
+        <th>אימייל</th>
+        <th>שירות</th>
+        <th>סטטוס</th>
+        <th>מחיר</th>
+        <th>הודעה</th>
+        <th>הערות</th> <!-- טור הערות חדש -->
       </tr>
     </thead>
     <tbody></tbody>
@@ -142,10 +151,10 @@
       const data = docSnap.data();
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${data.name}</td>
-        <td>${data.phone}</td>
-        <td>${data.email}</td>
-        <td>${data.service}</td>
+        <td>${data.name || ''}</td>
+        <td>${data.phone || ''}</td>
+        <td>${data.email || ''}</td>
+        <td>${data.service || ''}</td>
         <td>
           <select data-id="${docSnap.id}" data-field="status">
             <option value="חדש" ${data.status === 'חדש' ? 'selected' : ''}>חדש</option>
@@ -154,15 +163,14 @@
             <option value="סגור" ${data.status === 'סגור' ? 'selected' : ''}>סגור</option>
           </select>
         </td>
-        <td>
-          <input type="text" value="${data.price || ''}" data-id="${docSnap.id}" data-field="price">
-        </td>
+        <td><input type="text" value="${data.price || ''}" data-id="${docSnap.id}" data-field="price"></td>
         <td>${data.message || ''}</td>
+        <td><input type="text" value="${data.notes || ''}" data-id="${docSnap.id}" data-field="notes"></td>
       `;
       leadsTableBody.appendChild(tr);
     });
 
-    // מאזינים לשינויים בשדות העריכה בטבלה
+    // מאזינים לשינויים בשדות העריכה בטבלה (סטטוס, מחיר, הערות)
     leadsTableBody.querySelectorAll('select, input[type="text"]').forEach(el => {
       el.addEventListener('change', async (e) => {
         const id    = e.target.getAttribute('data-id');
@@ -172,7 +180,7 @@
         try {
           await updateDoc(docRef, { [field]: value });
         } catch (err) {
-          console.error('Error updating document: ', err);
+          console.error('Error updating document:', err);
         }
       });
     });
