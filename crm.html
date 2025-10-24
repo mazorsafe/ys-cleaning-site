@@ -54,15 +54,15 @@
     border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;
   }
 
-  /* רוחב מינימלי לעמודות ספציפיות */
+  /* רוחב מינימלי לעמודות */
   #leadsTable th:nth-child(5),
-  #leadsTable td:nth-child(5) { min-width: 120px; }
+  #leadsTable td:nth-child(5) { min-width: 120px; }  /* סטטוס */
   #leadsTable th:nth-child(6),
-  #leadsTable td:nth-child(6) { min-width: 80px; }
+  #leadsTable td:nth-child(6) { min-width: 80px; }   /* מחיר */
   #leadsTable th:nth-child(8),
-  #leadsTable td:nth-child(8) { min-width: 150px; }
+  #leadsTable td:nth-child(8) { min-width: 150px; }  /* הערות */
   #leadsTable th:nth-child(9),
-  #leadsTable td:nth-child(9) { min-width: 90px; } /* עמודת פעולות */
+  #leadsTable td:nth-child(9) { min-width: 90px; }   /* פעולות */
 
   @media print {
     body * { visibility: hidden; }
@@ -75,7 +75,7 @@
 
 <h1>מערכת ניהול לידים</h1>
 
-<!-- אזור התחברות -->
+<!-- התחברות -->
 <div id="loginDiv">
   <input type="email" id="loginEmail" placeholder="אימייל מנהל">
   <input type="password" id="loginPass" placeholder="סיסמה">
@@ -106,7 +106,7 @@
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
   import {
     getFirestore, collection, getDocs, updateDoc,
-    doc, addDoc, deleteDoc
+    doc, addDoc, deleteDoc, getDoc
   } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
   import { firebaseConfig } from "./firebase-config.js";
 
@@ -125,7 +125,7 @@
   const exportCsvBtn = document.getElementById('exportCsvBtn');
   const printBtn     = document.getElementById('printBtn');
 
-  // login
+  // login event
   loginBtn.addEventListener('click', async () => {
     const email = document.getElementById('loginEmail').value;
     const pass  = document.getElementById('loginPass').value;
@@ -136,7 +136,7 @@
     }
   });
 
-  // auth state
+  // auth state listener
   onAuthStateChanged(auth, (user) => {
     if (user) {
       loginDiv.classList.add('hidden');
@@ -148,7 +148,7 @@
     }
   });
 
-  // load leads
+  // load leads from Firestore
   async function loadLeads() {
     leadsTableBody.innerHTML = '';
     const querySnapshot = await getDocs(collection(db, 'leads'));
@@ -173,11 +173,10 @@
         <td><input type="text" value="${data.notes || ''}" data-id="${docSnap.id}" data-field="notes"></td>
         <td><button class="delete-btn" data-id="${docSnap.id}">מחק</button></td>
       `;
-      tr.dataset.info = JSON.stringify(data); // לשימור המידע לשימוש בעת מחיקה
       leadsTableBody.appendChild(tr);
     });
 
-    // update listeners
+    // update handlers for editing fields
     leadsTableBody.querySelectorAll('select, input[type="text"]').forEach(el => {
       el.addEventListener('change', async (e) => {
         const id    = e.target.getAttribute('data-id');
@@ -196,11 +195,15 @@
     leadsTableBody.querySelectorAll('.delete-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const id = e.target.getAttribute('data-id');
-        // parse row data
-        const rowData = JSON.parse(e.target.closest('tr').dataset.info);
         try {
-          await addDoc(collection(db, 'leads_archive'), rowData);
-          await deleteDoc(doc(db, 'leads', id));
+          // fetch the document from leads
+          const docRef  = doc(db, 'leads', id);
+          const docSnap = await getDoc(docRef);
+          const data    = docSnap.data();
+          // add to archive
+          await addDoc(collection(db, 'leads_archive'), data);
+          // delete from leads
+          await deleteDoc(docRef);
           await loadLeads();
         } catch (err) {
           console.error('Error deleting document:', err);
@@ -236,7 +239,7 @@
     await loadLeads();
   }
 
-  // export CSV
+  // export to CSV (Excel)
   async function exportCsv() {
     const querySnapshot = await getDocs(collection(db, 'leads'));
     const rows = [];
