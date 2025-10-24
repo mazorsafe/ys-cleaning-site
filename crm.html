@@ -17,109 +17,57 @@
     text-align: center;
     color: #4a5bd7;
   }
-  h2 {
-    text-align: center;
-  }
+  h2 { text-align: center; }
   .hidden { display: none; }
-  #loginDiv, #crmDiv {
-    max-width: 1000px;
-    margin: 0 auto;
-  }
+  #loginDiv, #crmDiv { max-width: 1000px; margin: 0 auto; }
   #loginDiv input {
-    display: block;
-    width: 100%;
-    padding: 0.8rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    display: block; width: 100%; padding: 0.8rem; margin-bottom: 1rem;
+    border: 1px solid #ccc; border-radius: 8px; font-size: 0.9rem;
   }
   #loginDiv button {
-    padding: 0.8rem 2rem;
-    background: #4a5bd7;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
+    padding: 0.8rem 2rem; background: #4a5bd7; color: #fff;
+    border: none; border-radius: 8px; cursor: pointer; font-size: 1rem;
   }
 
   /* כפתורי פעולה */
-  .crm-actions {
-    text-align: center;
-    margin-bottom: 1rem;
-  }
+  .crm-actions { text-align: center; margin-bottom: 1rem; }
   .crm-actions button {
-    margin: 0 0.5rem;
-    padding: 0.6rem 1.4rem;
-    font-size: 0.9rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    color: white;
+    margin: 0 0.5rem; padding: 0.6rem 1.4rem; font-size: 0.9rem;
+    border: none; border-radius: 6px; cursor: pointer; color: white;
     background: #4a5bd7;
   }
 
   table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-    background: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 100%; border-collapse: collapse; margin-top: 1rem; background: #fff;
+    border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
   th, td {
-    padding: 0.8rem;
-    border-bottom: 1px solid #eee;
-    text-align: center;
+    padding: 0.8rem; border-bottom: 1px solid #eee; text-align: center;
   }
-  th {
-    background: #eef1fa;
-    font-weight: 700;
-  }
-  tr:last-child td {
-    border-bottom: none;
-  }
+  th { background: #eef1fa; font-weight: 700; }
+  tr:last-child td { border-bottom: none; }
 
-  /* הגדלת רוחב לפקדים בטבלה */
+  /* פקדי עריכה */
   #leadsTable select,
   #leadsTable input[type="text"] {
-    width: 100%;
-    padding: 0.4rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-sizing: border-box;
+    width: 100%; padding: 0.4rem;
+    border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;
   }
 
-  /* רוחב מינימלי לעמודות: סטטוס, מחיר, הערות */
+  /* רוחב מינימלי לעמודות ספציפיות */
   #leadsTable th:nth-child(5),
-  #leadsTable td:nth-child(5) {
-    min-width: 120px;
-  }
+  #leadsTable td:nth-child(5) { min-width: 120px; }
   #leadsTable th:nth-child(6),
-  #leadsTable td:nth-child(6) {
-    min-width: 80px;
-  }
+  #leadsTable td:nth-child(6) { min-width: 80px; }
   #leadsTable th:nth-child(8),
-  #leadsTable td:nth-child(8) {
-    min-width: 150px;
-  }
+  #leadsTable td:nth-child(8) { min-width: 150px; }
+  #leadsTable th:nth-child(9),
+  #leadsTable td:nth-child(9) { min-width: 90px; } /* עמודת פעולות */
 
-  /* הדפסה: הצג רק את הטבלה בעת הדפסה */
   @media print {
-    body * {
-      visibility: hidden;
-    }
-    #crmDiv, #crmDiv * {
-      visibility: visible;
-    }
-    #crmDiv {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-    }
+    body * { visibility: hidden; }
+    #crmDiv, #crmDiv * { visibility: visible; }
+    #crmDiv { position: absolute; left: 0; top: 0; width: 100%; }
   }
 </style>
 </head>
@@ -134,54 +82,50 @@
   <button id="loginBtn">התחברות</button>
 </div>
 
-<!-- אזור CRM (מופיע רק לאחר התחברות) -->
+<!-- אזור CRM -->
 <div id="crmDiv" class="hidden">
   <h2>לידים קיימים</h2>
-
   <div class="crm-actions">
+    <button id="addLeadBtn">הוסף ליד ידני</button>
     <button id="exportCsvBtn">ייצוא לאקסל</button>
     <button id="printBtn">הדפס</button>
   </div>
-
   <table id="leadsTable">
     <thead>
       <tr>
-        <th>שם</th>
-        <th>טלפון</th>
-        <th>אימייל</th>
-        <th>שירות</th>
-        <th>סטטוס</th>
-        <th>מחיר</th>
-        <th>הודעה</th>
-        <th>הערות</th>
+        <th>שם</th><th>טלפון</th><th>אימייל</th><th>שירות</th>
+        <th>סטטוס</th><th>מחיר</th><th>הודעה</th><th>הערות</th><th>פעולות</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 </div>
 
-<!-- טעינת Firebase והלוגיקה -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-  import { getFirestore, collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+  import {
+    getFirestore, collection, getDocs, updateDoc,
+    doc, addDoc, deleteDoc
+  } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
   import { firebaseConfig } from "./firebase-config.js";
 
-  // אתחול Firebase
+  // init Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  // DOM references
   const loginDiv = document.getElementById('loginDiv');
   const crmDiv   = document.getElementById('crmDiv');
   const loginBtn = document.getElementById('loginBtn');
   const leadsTableBody = document.querySelector('#leadsTable tbody');
 
-  // כפתורי ייצוא והדפסה
+  const addLeadBtn   = document.getElementById('addLeadBtn');
   const exportCsvBtn = document.getElementById('exportCsvBtn');
   const printBtn     = document.getElementById('printBtn');
 
-  // התחברות בלחיצה
+  // login
   loginBtn.addEventListener('click', async () => {
     const email = document.getElementById('loginEmail').value;
     const pass  = document.getElementById('loginPass').value;
@@ -192,7 +136,7 @@
     }
   });
 
-  // מאזין לשינוי במצב התחברות
+  // auth state
   onAuthStateChanged(auth, (user) => {
     if (user) {
       loginDiv.classList.add('hidden');
@@ -204,7 +148,7 @@
     }
   });
 
-  // טעינת הלידים מה־Firestore
+  // load leads
   async function loadLeads() {
     leadsTableBody.innerHTML = '';
     const querySnapshot = await getDocs(collection(db, 'leads'));
@@ -227,11 +171,13 @@
         <td><input type="text" value="${data.price || ''}" data-id="${docSnap.id}" data-field="price"></td>
         <td>${data.message || ''}</td>
         <td><input type="text" value="${data.notes || ''}" data-id="${docSnap.id}" data-field="notes"></td>
+        <td><button class="delete-btn" data-id="${docSnap.id}">מחק</button></td>
       `;
+      tr.dataset.info = JSON.stringify(data); // לשימור המידע לשימוש בעת מחיקה
       leadsTableBody.appendChild(tr);
     });
 
-    // מאזינים לשינויים בשדות העריכה בטבלה (סטטוס, מחיר, הערות)
+    // update listeners
     leadsTableBody.querySelectorAll('select, input[type="text"]').forEach(el => {
       el.addEventListener('change', async (e) => {
         const id    = e.target.getAttribute('data-id');
@@ -245,41 +191,74 @@
         }
       });
     });
+
+    // delete handlers
+    leadsTableBody.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = e.target.getAttribute('data-id');
+        // parse row data
+        const rowData = JSON.parse(e.target.closest('tr').dataset.info);
+        try {
+          await addDoc(collection(db, 'leads_archive'), rowData);
+          await deleteDoc(doc(db, 'leads', id));
+          await loadLeads();
+        } catch (err) {
+          console.error('Error deleting document:', err);
+        }
+      });
+    });
   }
 
-  // פונקציה לייצוא כל הלידים ל-CSV (אקסל)
+  // add lead manually
+  async function addLeadManually() {
+    const name = prompt('שם מלא:');
+    const phone = prompt('טלפון:');
+    const email = prompt('אימייל (לא חובה):');
+    const service = prompt('שירות:');
+    const message = prompt('הודעה/הערות:');
+    if (!name || !phone || !service) {
+      alert('חובה למלא שם, טלפון ושירות');
+      return;
+    }
+    const data = {
+      name,
+      phone,
+      email: email || '',
+      service,
+      message: message || '',
+      status: 'חדש',
+      price: '',
+      notes: '',
+      source: 'admin',
+      createdAt: new Date()
+    };
+    await addDoc(collection(db, 'leads'), data);
+    await loadLeads();
+  }
+
+  // export CSV
   async function exportCsv() {
     const querySnapshot = await getDocs(collection(db, 'leads'));
     const rows = [];
-    // כותרות בעברית
-    rows.push(['שם','טלפון','אימייל','שירות','סטטוס','מחיר','הודעה','הערות']);
+    rows.push(['שם','טלפון','אימייל','שירות','סטטוס','מחיר','הודעה','הערות','מקור']);
     querySnapshot.forEach(docSnap => {
       const d = docSnap.data();
       rows.push([
-        d.name || '',
-        d.phone || '',
-        d.email || '',
-        d.service || '',
-        d.status || '',
-        d.price || '',
-        d.message || '',
-        d.notes || ''
+        d.name || '', d.phone || '', d.email || '', d.service || '',
+        d.status || '', d.price || '', d.message || '',
+        d.notes || '', d.source || ''
       ]);
     });
-    // יצירת מחרוזת CSV, התייחסות לרווחים וסימני מירכאות
-    const csvContent = rows.map(row =>
-      row.map(item => `"${String(item).replace(/"/g, '""')}"`).join(',')
-    ).join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const csv = rows.map(r => r.map(i => `"${String(i).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'leads.csv';
-    a.click();
+    a.href = url; a.download = 'leads.csv'; a.click();
     URL.revokeObjectURL(url);
   }
 
-  // חיבור הכפתורים לאירועים
+  // event listeners
+  addLeadBtn.addEventListener('click', addLeadManually);
   exportCsvBtn.addEventListener('click', exportCsv);
   printBtn.addEventListener('click', () => window.print());
 </script>
