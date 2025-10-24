@@ -12,11 +12,7 @@
     background: #f7f9fb;
     color: #333;
   }
-  h1 {
-    margin-bottom: 1rem;
-    text-align: center;
-    color: #4a5bd7;
-  }
+  h1 { margin-bottom: 1rem; text-align: center; color: #4a5bd7; }
   h2 { text-align: center; }
   .hidden { display: none; }
   #loginDiv, #crmDiv { max-width: 1000px; margin: 0 auto; }
@@ -28,15 +24,12 @@
     padding: 0.8rem 2rem; background: #4a5bd7; color: #fff;
     border: none; border-radius: 8px; cursor: pointer; font-size: 1rem;
   }
-
-  /* כפתורי פעולה */
   .crm-actions { text-align: center; margin-bottom: 1rem; }
   .crm-actions button {
     margin: 0 0.5rem; padding: 0.6rem 1.4rem; font-size: 0.9rem;
     border: none; border-radius: 6px; cursor: pointer; color: white;
     background: #4a5bd7;
   }
-
   table {
     width: 100%; border-collapse: collapse; margin-top: 1rem; background: #fff;
     border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -46,24 +39,20 @@
   }
   th { background: #eef1fa; font-weight: 700; }
   tr:last-child td { border-bottom: none; }
-
-  /* פקדי עריכה */
   #leadsTable select,
   #leadsTable input[type="text"] {
-    width: 100%; padding: 0.4rem;
-    border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;
+    width: 100%; padding: 0.4rem; border: 1px solid #ccc;
+    border-radius: 6px; box-sizing: border-box;
   }
-
   /* רוחב מינימלי לעמודות */
   #leadsTable th:nth-child(5),
-  #leadsTable td:nth-child(5) { min-width: 120px; }  /* סטטוס */
+  #leadsTable td:nth-child(5) { min-width: 120px; }
   #leadsTable th:nth-child(6),
-  #leadsTable td:nth-child(6) { min-width: 80px; }   /* מחיר */
+  #leadsTable td:nth-child(6) { min-width: 80px; }
   #leadsTable th:nth-child(8),
-  #leadsTable td:nth-child(8) { min-width: 150px; }  /* הערות */
+  #leadsTable td:nth-child(8) { min-width: 150px; }
   #leadsTable th:nth-child(9),
-  #leadsTable td:nth-child(9) { min-width: 90px; }   /* פעולות */
-
+  #leadsTable td:nth-child(9) { min-width: 120px; } /* פעולות */
   @media print {
     body * { visibility: hidden; }
     #crmDiv, #crmDiv * { visibility: visible; }
@@ -84,9 +73,10 @@
 
 <!-- אזור CRM -->
 <div id="crmDiv" class="hidden">
-  <h2>לידים קיימים</h2>
+  <h2 id="tableTitle">לידים קיימים</h2>
   <div class="crm-actions">
     <button id="addLeadBtn">הוסף ליד ידני</button>
+    <button id="toggleArchiveBtn">צפה בארכיון</button>
     <button id="exportCsvBtn">ייצוא לאקסל</button>
     <button id="printBtn">הדפס</button>
   </div>
@@ -113,19 +103,22 @@
   // init Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db = getFirestore(app);
+  const db   = getFirestore(app);
 
-  // DOM references
-  const loginDiv = document.getElementById('loginDiv');
-  const crmDiv   = document.getElementById('crmDiv');
-  const loginBtn = document.getElementById('loginBtn');
+  // DOM elements
+  const loginDiv     = document.getElementById('loginDiv');
+  const crmDiv       = document.getElementById('crmDiv');
+  const loginBtn     = document.getElementById('loginBtn');
   const leadsTableBody = document.querySelector('#leadsTable tbody');
+  const addLeadBtn      = document.getElementById('addLeadBtn');
+  const exportCsvBtn    = document.getElementById('exportCsvBtn');
+  const printBtn        = document.getElementById('printBtn');
+  const toggleArchiveBtn= document.getElementById('toggleArchiveBtn');
+  const tableTitle      = document.getElementById('tableTitle');
 
-  const addLeadBtn   = document.getElementById('addLeadBtn');
-  const exportCsvBtn = document.getElementById('exportCsvBtn');
-  const printBtn     = document.getElementById('printBtn');
+  let viewingArchive = false;
 
-  // login event
+  // login logic
   loginBtn.addEventListener('click', async () => {
     const email = document.getElementById('loginEmail').value;
     const pass  = document.getElementById('loginPass').value;
@@ -148,10 +141,11 @@
     }
   });
 
-  // load leads from Firestore
+  // load leads or archive
   async function loadLeads() {
     leadsTableBody.innerHTML = '';
-    const querySnapshot = await getDocs(collection(db, 'leads'));
+    const collectionName = viewingArchive ? 'leads_archive' : 'leads';
+    const querySnapshot = await getDocs(collection(db, collectionName));
     querySnapshot.forEach(docSnap => {
       const data = docSnap.data();
       const tr = document.createElement('tr');
@@ -161,55 +155,107 @@
         <td>${data.email || ''}</td>
         <td>${data.service || ''}</td>
         <td>
-          <select data-id="${docSnap.id}" data-field="status">
+          <select ${viewingArchive ? 'disabled' : ''} data-id="${docSnap.id}" data-field="status">
             <option value="חדש" ${data.status === 'חדש' ? 'selected' : ''}>חדש</option>
             <option value="בטיפול" ${data.status === 'בטיפול' ? 'selected' : ''}>בטיפול</option>
             <option value="בוצע" ${data.status === 'בוצע' ? 'selected' : ''}>בוצע</option>
             <option value="סגור" ${data.status === 'סגור' ? 'selected' : ''}>סגור</option>
           </select>
         </td>
-        <td><input type="text" value="${data.price || ''}" data-id="${docSnap.id}" data-field="price"></td>
+        <td><input type="text" ${viewingArchive ? 'disabled' : ''} value="${data.price || ''}" data-id="${docSnap.id}" data-field="price"></td>
         <td>${data.message || ''}</td>
-        <td><input type="text" value="${data.notes || ''}" data-id="${docSnap.id}" data-field="notes"></td>
-        <td><button class="delete-btn" data-id="${docSnap.id}">מחק</button></td>
+        <td><input type="text" ${viewingArchive ? 'disabled' : ''} value="${data.notes || ''}" data-id="${docSnap.id}" data-field="notes"></td>
+        <td>
+          ${viewingArchive
+            ? `<button class="restore-btn" data-id="${docSnap.id}">השב</button>`
+            : `<button class="edit-btn" data-id="${docSnap.id}">ערוך</button>
+               <button class="delete-btn" data-id="${docSnap.id}">מחק</button>`
+          }
+        </td>
       `;
       leadsTableBody.appendChild(tr);
     });
 
-    // update handlers for editing fields
-    leadsTableBody.querySelectorAll('select, input[type="text"]').forEach(el => {
-      el.addEventListener('change', async (e) => {
-        const id    = e.target.getAttribute('data-id');
-        const field = e.target.getAttribute('data-field');
-        const value = e.target.value;
-        const docRef = doc(db, 'leads', id);
-        try {
-          await updateDoc(docRef, { [field]: value });
-        } catch (err) {
-          console.error('Error updating document:', err);
-        }
+    // enable editing fields only in active view
+    if (!viewingArchive) {
+      leadsTableBody.querySelectorAll('select, input[type="text"]').forEach(el => {
+        el.addEventListener('change', async (e) => {
+          const id    = e.target.getAttribute('data-id');
+          const field = e.target.getAttribute('data-field');
+          const value = e.target.value;
+          const docRef = doc(db, 'leads', id);
+          try {
+            await updateDoc(docRef, { [field]: value });
+          } catch (err) {
+            console.error('Error updating document:', err);
+          }
+        });
       });
-    });
-
-    // delete handlers
-    leadsTableBody.querySelectorAll('.delete-btn').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const id = e.target.getAttribute('data-id');
-        try {
-          // fetch the document from leads
+      // edit buttons
+      leadsTableBody.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const id = e.target.getAttribute('data-id');
           const docRef  = doc(db, 'leads', id);
           const docSnap = await getDoc(docRef);
           const data    = docSnap.data();
-          // add to archive
-          await addDoc(collection(db, 'leads_archive'), data);
-          // delete from leads
-          await deleteDoc(docRef);
+          // prompts for each field
+          const name    = prompt('שם מלא:', data.name || '');
+          const phone   = prompt('טלפון:', data.phone || '');
+          const email   = prompt('אימייל (לא חובה):', data.email || '');
+          const service = prompt('שירות:', data.service || '');
+          const message = prompt('הודעה/הערות:', data.message || '');
+          const status  = prompt('סטטוס (חדש/בטיפול/בוצע/סגור):', data.status || 'חדש');
+          const price   = prompt('מחיר:', data.price || '');
+          const notes   = prompt('הערות מנהל:', data.notes || '');
+          // עדכון במסד
+          await updateDoc(docRef, {
+            name,
+            phone,
+            email,
+            service,
+            message,
+            status,
+            price,
+            notes
+          });
           await loadLeads();
-        } catch (err) {
-          console.error('Error deleting document:', err);
-        }
+        });
       });
-    });
+      // delete buttons
+      leadsTableBody.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const id = e.target.getAttribute('data-id');
+          try {
+            // שלוף את המסמך
+            const docRef  = doc(db, 'leads', id);
+            const docSnap = await getDoc(docRef);
+            const data    = docSnap.data();
+            await addDoc(collection(db, 'leads_archive'), data);
+            await deleteDoc(docRef);
+            await loadLeads();
+          } catch (err) {
+            console.error('Error deleting document:', err);
+          }
+        });
+      });
+    } else {
+      // restore buttons in archive view
+      leadsTableBody.querySelectorAll('.restore-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const id = e.target.getAttribute('data-id');
+          try {
+            const docRef  = doc(db, 'leads_archive', id);
+            const docSnap = await getDoc(docRef);
+            const data    = docSnap.data();
+            await addDoc(collection(db, 'leads'), data);
+            await deleteDoc(docRef);
+            await loadLeads();
+          } catch (err) {
+            console.error('Error restoring document:', err);
+          }
+        });
+      });
+    }
   }
 
   // add lead manually
@@ -239,9 +285,18 @@
     await loadLeads();
   }
 
-  // export to CSV (Excel)
+  // toggle archive view
+  function toggleArchive() {
+    viewingArchive = !viewingArchive;
+    tableTitle.textContent = viewingArchive ? 'לידים בארכיון' : 'לידים קיימים';
+    toggleArchiveBtn.textContent = viewingArchive ? 'חזור לרשימה' : 'צפה בארכיון';
+    loadLeads();
+  }
+
+  // export CSV
   async function exportCsv() {
-    const querySnapshot = await getDocs(collection(db, 'leads'));
+    const collectionName = viewingArchive ? 'leads_archive' : 'leads';
+    const querySnapshot = await getDocs(collection(db, collectionName));
     const rows = [];
     rows.push(['שם','טלפון','אימייל','שירות','סטטוס','מחיר','הודעה','הערות','מקור']);
     querySnapshot.forEach(docSnap => {
@@ -254,14 +309,15 @@
     });
     const csv = rows.map(r => r.map(i => `"${String(i).replace(/"/g,'""')}"`).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'leads.csv'; a.click();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = (viewingArchive ? 'leads_archive' : 'leads') + '.csv'; a.click();
     URL.revokeObjectURL(url);
   }
 
   // event listeners
   addLeadBtn.addEventListener('click', addLeadManually);
+  toggleArchiveBtn.addEventListener('click', toggleArchive);
   exportCsvBtn.addEventListener('click', exportCsv);
   printBtn.addEventListener('click', () => window.print());
 </script>
